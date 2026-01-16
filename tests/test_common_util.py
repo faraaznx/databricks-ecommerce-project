@@ -5,11 +5,6 @@ Scope:
 - normalize_columns
 - convert_date_columns
 
-Design principles:
-- Do not create SparkSession manually (Databricks provides `spark`)
-- Focus on observable behavior, not implementation details
-- Explicitly validate input contracts and Spark semantics
-- Keep tests deterministic and fast
 """
 
 import pytest
@@ -23,28 +18,23 @@ from utils.common_util import (
 
 
 @pytest.fixture(scope="session")
-def spark_session():
-    """
-    Databricks provides an active SparkSession as `spark`.
-
-    Exposing it as a pytest fixture ensures:
-    - Consistent access across tests
-    - No accidental SparkSession re-creation
-    """
-    return spark
+def spark():
+    from pyspark.sql import SparkSession
+    # This retrieves the active Spark session already running in Databricks
+    return SparkSession.builder.getOrCreate()
 
 
 # ============================================================
 # normalize_columns tests
 # ============================================================
 
-def test_normalize_columns_success(spark_session):
+def test_normalize_columns_success(spark):
     """
     Column names should be normalized to:
     - lowercase
     - underscores instead of spaces or hyphens
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [(1, "Alice")],
         ["User ID", "User-Name"]
     )
@@ -55,11 +45,11 @@ def test_normalize_columns_success(spark_session):
     assert result_df.columns == ["user_id", "user_name"]
 
 
-def test_normalize_columns_preserves_data(spark_session):
+def test_normalize_columns_preserves_data(spark):
     """
     Column normalization must not mutate row-level data.
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [(1, "Alice"), (2, "Bob")],
         ["User ID", "User Name"]
     )
@@ -85,11 +75,11 @@ def test_normalize_columns_wrong_type():
         normalize_columns("not_a_dataframe")
 
 
-def test_normalize_columns_empty_schema(spark_session):
+def test_normalize_columns_empty_schema(spark):
     """
     A DataFrame without columns is considered invalid input.
     """
-    df = spark_session.createDataFrame([(1,)], ["id"])
+    df = spark.createDataFrame([(1,)], ["id"])
     df = df.select()  # explicitly drop all columns
 
     with pytest.raises(ValueError, match="Input DataFrame has no columns"):
@@ -100,12 +90,12 @@ def test_normalize_columns_empty_schema(spark_session):
 # convert_date_columns tests
 # ============================================================
 
-def test_convert_date_columns_success_single_column(spark_session):
+def test_convert_date_columns_success_single_column(spark):
     """
     Valid date strings should be converted to DateType
     using the provided format.
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [("2024-01-10",)],
         ["event_date"]
     )
@@ -119,11 +109,11 @@ def test_convert_date_columns_success_single_column(spark_session):
     assert isinstance(result_df.schema["event_date"].dataType, DateType)
 
 
-def test_convert_date_columns_success_multiple_columns(spark_session):
+def test_convert_date_columns_success_multiple_columns(spark):
     """
     Multiple columns should be converted in a single call.
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [("2024-01-10", "2024-01-12")],
         ["start_date", "end_date"]
     )
@@ -138,13 +128,13 @@ def test_convert_date_columns_success_multiple_columns(spark_session):
     assert isinstance(result_df.schema["end_date"].dataType, DateType)
 
 
-def test_convert_date_columns_invalid_date_results_in_null(spark_session):
+def test_convert_date_columns_invalid_date_results_in_null(spark):
     """
     Spark behavior:
     - Invalid date strings are converted to NULL
     - No exception is raised
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [("invalid-date",)],
         ["event_date"]
     )
@@ -158,11 +148,11 @@ def test_convert_date_columns_invalid_date_results_in_null(spark_session):
     assert result_df.collect()[0]["event_date"] is None
 
 
-def test_convert_date_columns_preserves_row_count(spark_session):
+def test_convert_date_columns_preserves_row_count(spark):
     """
     Date conversion must not alter row cardinality.
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [("2024-01-10",), ("2024-01-11",)],
         ["event_date"]
     )
@@ -192,11 +182,11 @@ def test_convert_date_columns_wrong_df_type():
         convert_date_columns("not_a_dataframe", ["date"], "yyyy-MM-dd")
 
 
-def test_convert_date_columns_columns_not_list(spark_session):
+def test_convert_date_columns_columns_not_list(spark):
     """
     Columns argument must be a list to avoid ambiguous behavior.
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [("2024-01-10",)],
         ["event_date"]
     )
@@ -205,11 +195,11 @@ def test_convert_date_columns_columns_not_list(spark_session):
         convert_date_columns(df, "event_date", "yyyy-MM-dd")
 
 
-def test_convert_date_columns_columns_empty(spark_session):
+def test_convert_date_columns_columns_empty(spark):
     """
     An empty columns list is treated as invalid input.
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [("2024-01-10",)],
         ["event_date"]
     )
@@ -218,11 +208,11 @@ def test_convert_date_columns_columns_empty(spark_session):
         convert_date_columns(df, [], "yyyy-MM-dd")
 
 
-def test_convert_date_columns_date_format_missing(spark_session):
+def test_convert_date_columns_date_format_missing(spark):
     """
     Date format is mandatory for deterministic parsing.
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [("2024-01-10",)],
         ["event_date"]
     )
@@ -231,11 +221,11 @@ def test_convert_date_columns_date_format_missing(spark_session):
         convert_date_columns(df, ["event_date"], None)
 
 
-def test_convert_date_columns_missing_column(spark_session):
+def test_convert_date_columns_missing_column(spark):
     """
     Attempting to convert a non-existent column should fail explicitly.
     """
-    df = spark_session.createDataFrame(
+    df = spark.createDataFrame(
         [("2024-01-10",)],
         ["event_date"]
     )
