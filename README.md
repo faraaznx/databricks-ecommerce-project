@@ -1,19 +1,44 @@
 # Databricks E-commerce Sales Data Pipeline
-This project implements a scalable, end-to-end Data Engineering pipeline using Databricks and PySpark. The system ingests raw e-commerce data (orders, products, customers, transactions), cleanses it, and transforms it into highly optimized analytical tables to provide business insights into sales and profitability.
+This project implements a production-grade data engineering solution on **Azure Databricks** to process, enrich, and aggregate e-commerce sales data. The system ingests raw datasets related to customers, products, orders, and transactions, transforms them into analytics-ready tables, and exposes business-level aggregates for downstream reporting and decision-making. The solution emphasizes scalability, data quality, testability, and clear architectural separation of concerns.
 
-The solution follows the Medallion Architecture to ensure data quality and reliability.
 
-Full Problem Statement : 
+**Full Problem Statement:** https://github.com/faraaznx/databricks-ecommerce-project/tree/main/Problem_Statement
 
-## Bronze
-- `Orders` json files are to be incrementally loaded and schema is being enforced. Any deviation from the schema will cause the pipeline to fail at the bronze processing
-- `Products` Excel files are incrementally loaded, meaning the source containers get new files every day. Schema is nt forced. Any changes in the schema will be captured in the `rescue` column.
-- `Customer` csv is assumed to be a full file. Every time a new file comes, it is going to replace the older file. All the customer will always be present in a single file.
+## Assumptions
 
-## Silver
-- `Orders` table has a schema enforced. Deviation will cause failure
-- `Products` table as schema enforced for columns required in the final agg table. Deviation will cause failure.
-- `Customers` table has schema enforced for columns required in the final agg table. Deviation will cause failure. 
+The following assumptions were deliberately made to model the solution as a production-grade data pipeline and to represent realistic variations in ingestion and load patterns across different data sources.
+
+### Bronze Layer (Raw Ingestion)
+
+- **Orders**
+  - Orders are ingested from JSON files using an incremental load strategy.
+  - A strict schema is enforced at ingestion time.
+  - Any schema deviation results in a pipeline failure to prevent propagation of corrupt or unexpected data.
+
+- **Products**
+  - Product data is ingested from Excel files on an incremental basis, with new files arriving daily.
+  - Schema enforcement is intentionally not applied at this stage.
+  - Any unexpected or evolving fields are captured in a `rescue` column to support schema drift analysis without breaking ingestion.
+
+- **Customers**
+  - Customer data is ingested from a CSV file using a full-load pattern.
+  - Each new file completely replaces the previous version.
+  - It is assumed that the full customer population is always present in a single file.
+
+### Silver Layer (Enriched Data)
+
+- **Orders**
+  - A strict schema is enforced on the enriched orders table.
+  - Any deviation from the expected schema results in a pipeline failure.
+
+- **Products**
+  - Schema enforcement is applied only to the columns required for downstream aggregations.
+  - Deviations in these required columns cause the pipeline to fail.
+
+- **Customers**
+  - Schema enforcement is applied only to the columns required for downstream aggregations.
+  - Deviations in these required columns cause the pipeline to fail.
+
 
 ## Cases to Handle
 - If there's no file or empty file.
