@@ -1,3 +1,10 @@
+# Databricks E-commerce Sales Data Pipeline
+This project implements a scalable, end-to-end Data Engineering pipeline using Databricks and PySpark. The system ingests raw e-commerce data (orders, products, customers, transactions), cleanses it, and transforms it into highly optimized analytical tables to provide business insights into sales and profitability.
+
+The solution follows the Medallion Architecture to ensure data quality and reliability.
+
+Full Problem Statement : 
+
 ## Bronze
 - `Orders` json files are to be incrementally loaded and schema is being enforced. Any deviation from the schema will cause the pipeline to fail at the bronze processing
 - `Products` Excel files are incrementally loaded, meaning the source containers get new files every day. Schema is nt forced. Any changes in the schema will be captured in the `rescue` column.
