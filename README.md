@@ -58,10 +58,11 @@ Batch processing is used to transform historical datasets into structured tables
 ### High-Level Flow
 1. **Raw Ingestion**
    - Load source datasets into raw (Bronze) tables with minimal transformation.
-   - For `Orders` and `Products`, **autoloader** is used to incrementally ingest new files. Data is written in `append` mode using batch execution (`availableNow = true`).
+   - For `Orders` and `Products`, **autoloader** is used to incrementally ingest only new files. Data is written in `append` mode using batch execution (`availableNow = true`).
    - For `Customers`, data is ingested using a full-load pattern with the write mode set to `overwrite`.
 2. **Enrichment**
    - Create enriched customer and product tables.
+   - For `Orders` and `Products`, **autoloader** is used to incrementally ingest only new rows. Data is written in `append` mode using batch execution (`availableNow = true`).
    - Build an enriched order fact table containing:
      - Profit (rounded to 2 decimal places)
      - Customer attributes (name, country)
@@ -81,6 +82,9 @@ Batch processing is used to transform historical datasets into structured tables
   - Catalog, schema and all tables are created by executing the [DDL](DDL.ipynb) notebook.
   - Ideally the tables should be of external type, but gor the sake of simplicity of implementation they all are created as managed table.
 
+## Workflow Execution
+![Pipeline Execution](Problem_Statement/assets/pipeline_execution.png)
+
 ## Data Lineage
 ![Data Lineage](Problem_Statement/assets/lineage.png)
 ## Error Handling & Unit Testing
@@ -93,11 +97,12 @@ Batch processing is used to transform historical datasets into structured tables
 - **Liquid Clustering**: Data is clustered by Year, Category, sub-Category in the Gold layer to optimize time-series queries.
 - **Broadcast Joins**: Used for `Customers` table to minimize network shuffle during joining.
 
+## Observation
+
+- Referential Integrity Issues
+
 ## Note
 
 This repository was created specifically to address the given problem using Databricks. It is not intended to be a fully self-contained project that can be cloned and executed on any local machine.
 
 To run this solution in a different Databricks workspace, the required schemas, volumes, and storage locations must be created in advance, and the source data must be placed in the expected paths.
-
-
-
