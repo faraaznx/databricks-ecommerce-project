@@ -73,8 +73,3 @@ Batch processing is used to transform historical datasets into structured tables
 4. **Analytical Queries**
    - Use Spark SQL to derive additional aggregate views required by the problem statement.
 
-
-## Cases to Handle
-- If there's no file or empty file.
-- Corrupt rows
-- When a schema is changed for the joining table (joining key is missing)
