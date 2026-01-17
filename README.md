@@ -51,6 +51,10 @@ Batch processing is used to transform historical datasets into structured tables
 
 ## Architecture
 
+### High-Level System Architecture
+
+![E-commerce Data Pipeline Architecture](Problem_Statement/assets/architecture.png)
+
 ### High-Level Flow
 1. **Raw Ingestion**
    - Load source datasets into raw (Bronze) tables with minimal transformation.
