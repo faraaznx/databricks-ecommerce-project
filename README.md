@@ -84,10 +84,11 @@ Batch processing is used to transform historical datasets into structured tables
 ## Error Handling & Unit Testing
 - Defensive checks for empty files and malformed records during ingestion.
 - Explicit schema handling to avoid silent data corruption in silver layer.
+- Unit Tests: Isolated tests for custom functions.
 
 ## Scalibility & Performance
 - **Autoloader**: Use of Autoloader for loading the data incrementally.
-- **Partitioning**: Data is partitioned by Year in the Gold layer to optimize time-series queries.
+- **Liquid Clustering**: Data is clustered by Year, Category, sub-Category in the Gold layer to optimize time-series queries.
 - **Broadcast Joins**: Used for `Customers` table to minimize network shuffle during joining.
 
 
