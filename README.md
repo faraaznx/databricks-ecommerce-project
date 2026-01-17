@@ -77,4 +77,6 @@ Batch processing is used to transform historical datasets into structured tables
    - Used Spark SQL to derive additional aggregates required by the problem statement.
    - SQL Queries to derive aggregates can be found here : [Aggregate Queries](sql_queries/)
    - Output datasets of these queries are available as CSV files here : [Output Datasets](output_datasets/)
-
+5. **Delta Assets Creation**
+  - Catalog, schema and all tables are created by executing the [DDL](DDL/) notebook.
+  - Ideally the tables should be of external type, but gor the sake of simplicity of implementation they all are created as managed table.
