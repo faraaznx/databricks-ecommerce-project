@@ -58,12 +58,15 @@ Batch processing is used to transform historical datasets into structured tables
 ### High-Level Flow
 1. **Raw Ingestion**
    - Load source datasets into raw (Bronze) tables with minimal transformation.
+   - For `Orders` and `Products`, **autoloader** is used to incrementally ingest new files. Data is written in `append` mode using batch execution (`availableNow = true`).
+   - For `Customers`, data is ingested using a full-load pattern with the write mode set to `overwrite`.
 2. **Enrichment**
    - Create enriched customer and product tables.
    - Build an enriched order fact table containing:
      - Profit (rounded to 2 decimal places)
      - Customer attributes (name, country)
      - Product attributes (category, sub-category)
+
 3. **Aggregation**
    - Generate a gold aggregate table computing profit by:
      - Year
