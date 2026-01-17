@@ -78,5 +78,16 @@ Batch processing is used to transform historical datasets into structured tables
    - SQL Queries to derive aggregates can be found here : [Aggregate Queries](sql_queries/)
    - Output datasets of these queries are available as CSV files here : [Output Datasets](output_datasets/)
 5. **Delta Assets Creation**
-  - Catalog, schema and all tables are created by executing the [DDL](DDL/) notebook.
+  - Catalog, schema and all tables are created by executing the [DDL](DDL.ipynb) notebook.
   - Ideally the tables should be of external type, but gor the sake of simplicity of implementation they all are created as managed table.
+
+## Error Handling & Unit Testing
+- Defensive checks for empty files and malformed records during ingestion.
+- Explicit schema handling to avoid silent data corruption in silver layer.
+
+## Scalibility & Performance
+- **Autoloader**: Use of Autoloader for loading the data incrementally.
+- **Partitioning**: Data is partitioned by Year in the Gold layer to optimize time-series queries.
+- **Broadcast Joins**: Used for `Customers` table to minimize network shuffle during joining.
+
+
