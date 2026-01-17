@@ -74,5 +74,6 @@ Batch processing is used to transform historical datasets into structured tables
      - Product Sub-Category
      - Customer
 4. **Analytical Queries**
-   - Use Spark SQL to derive additional aggregates required by the problem statement.
+   - Used Spark SQL to derive additional aggregates required by the problem statement.
+   - SQL Queries to derive aggregates can be found here : [Aggregate Queries](sql_queries/)
 
