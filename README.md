@@ -91,4 +91,11 @@ Batch processing is used to transform historical datasets into structured tables
 - **Liquid Clustering**: Data is clustered by Year, Category, sub-Category in the Gold layer to optimize time-series queries.
 - **Broadcast Joins**: Used for `Customers` table to minimize network shuffle during joining.
 
+## Note
+
+This repository was created specifically to address the given problem using Databricks. It is not intended to be a fully self-contained project that can be cloned and executed on any local machine.
+
+To run this solution in a different Databricks workspace, the required schemas, volumes, and storage locations must be created in advance, and the source data must be placed in the expected paths.
+
+
 
