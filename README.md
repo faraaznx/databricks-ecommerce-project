@@ -81,6 +81,8 @@ Batch processing is used to transform historical datasets into structured tables
   - Catalog, schema and all tables are created by executing the [DDL](DDL.ipynb) notebook.
   - Ideally the tables should be of external type, but gor the sake of simplicity of implementation they all are created as managed table.
 
+## Data Lineage
+![Data Lineage](Problem_Statement/assets/lineage.png)
 ## Error Handling & Unit Testing
 - Defensive checks for empty files and malformed records during ingestion.
 - Explicit schema handling to avoid silent data corruption in silver layer.
