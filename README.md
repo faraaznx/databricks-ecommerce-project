@@ -38,6 +38,36 @@ The following assumptions were deliberately made to model the solution as a prod
 - **Customers**
   - Schema enforcement is applied only to the columns required for downstream aggregations.
   - Deviations in these required columns cause the pipeline to fail.
+---  
+## Solution Overview
+The solution is implemented using **PySpark on Databricks** and follows a **Medallion Architecture** pattern:
+- **Bronze (Raw):** Source-aligned raw tables
+- **Silver (Enriched):** Cleaned and deduped tables
+- **Gold (Aggregates):** Business-level profit aggregations
+
+Batch processing is used to transform historical datasets into structured tables suitable for analytics. Unit tests validate transformation logic and ensure deterministic, reproducible outputs.
+
+---
+
+## Architecture
+
+### High-Level Flow
+1. **Raw Ingestion**
+   - Load source datasets into raw (Bronze) tables with minimal transformation.
+2. **Enrichment**
+   - Create enriched customer and product tables.
+   - Build an enriched order fact table containing:
+     - Profit (rounded to 2 decimal places)
+     - Customer attributes (name, country)
+     - Product attributes (category, sub-category)
+3. **Aggregation**
+   - Generate a gold aggregate table computing profit by:
+     - Year
+     - Product Category
+     - Product Sub-Category
+     - Customer
+4. **Analytical Queries**
+   - Use Spark SQL to derive additional aggregate views required by the problem statement.
 
 
 ## Cases to Handle
