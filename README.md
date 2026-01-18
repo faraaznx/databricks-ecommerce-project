@@ -97,9 +97,10 @@ Batch processing is used to transform historical datasets into structured tables
 - **Liquid Clustering**: Data is clustered by Year, Category, sub-Category in the Gold layer to optimize time-series queries.
 - **Broadcast Joins**: Used for `Customers` table to minimize network shuffle during joining.
 
-## Observation
+## Observations
 
-- Referential Integrity Issues
+- **Referential Integrity Issues:** Certain `product_id` values are present in the `Orders` dataset but do not exist in the `Products` dataset. As a result, the corresponding `category` and `sub_category` fields resolve to `NULL` during enrichment. To ensure completeness and stability of downstream aggregations, these `NULL` values are explicitly replaced with the keyword `Unknown`.
+
 
 ## Note
 
