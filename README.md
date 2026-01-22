@@ -1,8 +1,8 @@
 # Databricks E-commerce Sales Data Pipeline
 This project implements a production-grade data engineering solution on **Azure Databricks** to process, enrich, and aggregate e-commerce sales data. The system ingests raw datasets related to customers, products, orders, and transactions, transforms them into analytics-ready tables, and exposes business-level aggregates for downstream reporting and decision-making. The solution emphasizes scalability, data quality, testability, and clear architectural separation of concerns.
 
+**Full Problem Statement:** [Problem Statement (PDF)](Problem_Statement/PEI%20Lead%20Data%20Engineer%20Task.pdf)
 
-**Full Problem Statement:** ![Problem Statement](Problem_Statement/PEI Lead Data Engineer Task.pdf)
 
 ## Assumptions
 
