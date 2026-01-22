@@ -2,7 +2,7 @@
 This project implements a production-grade data engineering solution on **Azure Databricks** to process, enrich, and aggregate e-commerce sales data. The system ingests raw datasets related to customers, products, orders, and transactions, transforms them into analytics-ready tables, and exposes business-level aggregates for downstream reporting and decision-making. The solution emphasizes scalability, data quality, testability, and clear architectural separation of concerns.
 
 
-**Full Problem Statement:** https://github.com/faraaznx/databricks-ecommerce-project/tree/main/Problem_Statement
+**Full Problem Statement:** ![Problem Statement](Problem_Statement/PEI Lead Data Engineer Task.pdf)
 
 ## Assumptions
 
